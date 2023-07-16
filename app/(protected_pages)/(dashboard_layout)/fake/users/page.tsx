@@ -11,6 +11,8 @@ import api from "@/lib/api";
 import { fakerEN_CA as faker } from "@faker-js/faker";
 import { T_User } from "@/@types/@user";
 import { AxiosResponse } from "axios";
+import { useAtom } from "jotai";
+import { J_fake_user } from "@/store/atoms";
 const Page = () => {
   const initial = useMemo(
     () => ({
@@ -28,10 +30,14 @@ const Page = () => {
       setPayload(initial);
     },
   });
-  const { data: fake_user } = useQuery<AxiosResponse<T_User[]>>({
+  const [fake_user, setFake_user] = useAtom(J_fake_user);
+  useQuery<AxiosResponse<T_User[]>>({
     queryKey: ["fake-accounts"],
     queryFn: () => api.post("/users/get-fake-user"),
     retry: false,
+    onSuccess(data) {
+      setFake_user([payload, ...data.data]);
+    },
   });
   return (
     <div className="div-stack gap-4">
@@ -166,7 +172,7 @@ const Page = () => {
       </Button>
 
       <h4>Users</h4>
-      {fake_user?.data?.map((value, i) => {
+      {fake_user?.map((value, i) => {
         return (
           <div
             key={"a" + i}
