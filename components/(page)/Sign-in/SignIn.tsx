@@ -4,7 +4,7 @@ import { Input } from "@/components/Input/Input";
 import { Center } from "@/components/layout/Center";
 import api from "@/lib/api";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 
