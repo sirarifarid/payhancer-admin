@@ -24,21 +24,24 @@ const Page = () => {
     []
   );
   const [payload, setPayload] = useState(initial);
+  const [fake_user, setFake_user] = useAtom(J_fake_user);
   const { mutate, data, error, isLoading } = useMutation<any, any>({
     mutationFn: () => api.post("/users/create", payload),
     onSuccess() {
       setPayload(initial);
+      setFake_user((p) => [payload, ...p]);
     },
   });
-  const [fake_user, setFake_user] = useAtom(J_fake_user);
+
   useQuery<AxiosResponse<T_User[]>>({
     queryKey: ["fake-accounts"],
     queryFn: () => api.post("/users/get-fake-user"),
     retry: false,
     onSuccess(data) {
-      setFake_user([payload, ...data.data]);
+      setFake_user([...data.data, ...fake_user]);
     },
   });
+  console.log(fake_user);
   return (
     <div className="div-stack gap-4">
       <h5>Create fake user</h5>

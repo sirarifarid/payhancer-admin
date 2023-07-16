@@ -8,7 +8,9 @@ const Layout: FC<{
   return (
     <Center className="h-screen overflow-hidden flex-shrink-0 antialiased bg-gray-50 text-gray-800">
       <Sidebar />
-      <div className="flex-1 p-4 self-start">{children}</div>
+      <div className="flex-1 p-4 self-start h-fill overflow-auto">
+        {children}
+      </div>
     </Center>
   );
 };

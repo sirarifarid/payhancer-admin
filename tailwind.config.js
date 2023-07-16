@@ -14,6 +14,9 @@ module.exports = {
       width: {
         fill: "-webkit-fill-available",
       },
+      height: {
+        fill: "-webkit-fill-available",
+      },
       fontSize: {
         body1: "14px",
         body2: "16px",
