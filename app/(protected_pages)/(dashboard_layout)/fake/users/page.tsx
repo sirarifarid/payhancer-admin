@@ -9,6 +9,7 @@ import { useAppState } from "@/hooks/useAppState";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { fakerEN_CA as faker } from "@faker-js/faker";
+import { T_User } from "@/@types/@user";
 const Page = () => {
   const initial = useMemo(
     () => ({
@@ -20,9 +21,9 @@ const Page = () => {
     []
   );
   const [payload, setPayload] = useState(initial);
-  const { mutate, data, error } = useMutation<any, any>({
+  const { mutate, data, error, isLoading } = useMutation<any, any>({
     mutationFn: () => api.post("/users/create", payload),
-    onSuccess(data, variables, context) {
+    onSuccess() {
       setPayload(initial);
     },
   });
@@ -31,10 +32,9 @@ const Page = () => {
     queryFn: () => api.post("/users/get-fake-user"),
     retry: false,
   });
-  const [fake_user] = useAppState("fake-accounts");
-
+  const [fake_user] = useAppState<T_User[]>("fake-accounts");
   return (
-    <Stack className="gap-4">
+    <div className="div-stack gap-4">
       <h5>Create fake user</h5>
       <Center className="gap-4">
         <div className="flex-1">
@@ -156,6 +156,7 @@ const Page = () => {
         </p>
       )}
       <Button
+        isLoading={isLoading}
         onClick={() => {
           mutate();
         }}
@@ -165,7 +166,28 @@ const Page = () => {
       </Button>
 
       <h4>Users</h4>
-    </Stack>
+      {fake_user?.map((value, i) => {
+        return (
+          <div
+            key={"a" + i}
+            className="div-stack p-4 bg-white rounded-md gap-2"
+          >
+            <p>
+              Name:{" "}
+              <b>
+                {value.firstName} {value.lastName}
+              </b>
+            </p>
+            <p>
+              Username: <b>{value.username}</b>
+            </p>
+            <p>
+              Email: <b>{value.email}</b>
+            </p>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 

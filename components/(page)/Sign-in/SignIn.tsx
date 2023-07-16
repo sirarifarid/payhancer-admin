@@ -9,15 +9,15 @@ import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 
 const SignIn = () => {
-  const [cookies, setCookies] = useCookies(["_sc_adm"]);
+  const [, setCookies] = useCookies(["_sc_adm"]);
   const router = useRouter();
   const [payload, setPayload] = useState({
     user: "",
     password: "",
   });
-  const { error, data, mutate } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: () => api.post("/auth/login", payload),
-    onSuccess(data, variables, context) {
+    onSuccess(data) {
       setCookies("_sc_adm", data.data.sc_tkn);
       router.replace("/");
     },
@@ -53,7 +53,12 @@ const SignIn = () => {
               type="password"
             />
 
-            <Button className="h-8" fullWidth onClick={() => mutate()}>
+            <Button
+              isLoading={isLoading}
+              className="h-8"
+              fullWidth
+              onClick={() => mutate()}
+            >
               Submit
             </Button>
           </div>

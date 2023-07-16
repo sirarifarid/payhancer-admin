@@ -3,40 +3,53 @@
 @tailwind utilities;
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Norican&display=swap");
 
+@layer components {
+  .div-center {
+    @apply flex items-center justify-center;
+  }
+  .div-stack {
+    @apply flex flex-col;
+  }
+}
+
+@layer base {
+  button {
+    @apply cursor-pointer border-none outline-[none];
+  }
+  h1 {
+    @apply text-[36px];
+  }
+  h2 {
+    @apply text-[30px];
+  }
+  h3 {
+    @apply text-[26px];
+  }
+  h4 {
+    @apply text-[22px];
+  }
+  h5 {
+    @apply text-[18px];
+  }
+  h6 {
+    @apply text-[12px];
+  }
+  p {
+    @apply text-body1;
+  }
+  input {
+    @apply border-none outline-none;
+    outline: none;
+  }
+}
+
 * {
   @apply m-0 p-0;
   font-family: "Manrope", sans-serif;
 }
+
 body {
   @apply w-screen overflow-x-hidden bg-gray-900;
-}
-button {
-  @apply cursor-pointer border-none outline-[none];
-}
-h1 {
-  @apply text-[36px];
-}
-h2 {
-  @apply text-[30px];
-}
-h3 {
-  @apply text-[26px];
-}
-h4 {
-  @apply text-[22px];
-}
-h5 {
-  @apply text-[18px];
-}
-h6 {
-  @apply text-[12px];
-}
-p {
-  @apply text-body1;
-}
-input {
-  @apply border-none outline-none;
-  outline: none;
 }
 
 .AccordionItem {
