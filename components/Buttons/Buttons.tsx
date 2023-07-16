@@ -7,8 +7,8 @@ export const Button = React.forwardRef<
   ButtonProps & {
     icon?: any;
     fullWidth?: boolean;
-    variant?: "error" | "pending" | "primary" | "success";
     isLoading?: boolean;
+    variant?: "error" | "pending" | "primary" | "success";
   }
 >((props, ref) => {
   let {
@@ -18,20 +18,19 @@ export const Button = React.forwardRef<
     fullWidth,
     onMouseDown,
     onMouseUp,
-    variant = "primary",
     isLoading,
+    variant,
     ...rest
   } = props;
   const [effect, setEffect] = useState(false);
-  const bg = useMemo(() => `bg-${variant} `, [variant]);
   return (
     <button
       {...rest}
       ref={ref}
       className={classnames(
-        "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center justify-center",
+        "text-white hover:bg-opacity-80 transition-all focus:ring-4 font-medium rounded text-sm px-5 py-2.5 inline-flex items-center justify-center div-sta",
         fullWidth ? "w-full" : "",
-        bg,
+        variant ? "btn-" + variant : "bg-primary",
         className
       )}
       onMouseDown={(e) => {

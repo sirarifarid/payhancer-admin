@@ -1,11 +1,8 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import type { Metadata } from "next";
-import { Stack } from "@/components/layout/Stack";
+import React, { useMemo, useState } from "react";
 import { Button } from "@/components/Buttons/Buttons";
 import { Center } from "@/components/layout/Center";
-import { useAppState } from "@/hooks/useAppState";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { fakerEN_CA as faker } from "@faker-js/faker";
@@ -13,6 +10,7 @@ import { T_User } from "@/@types/@user";
 import { AxiosResponse } from "axios";
 import { useAtom } from "jotai";
 import { J_fake_user } from "@/store/atoms";
+import { Spacer } from "@/components/layout/Spacer";
 const Page = () => {
   const initial = useMemo(
     () => ({
@@ -33,6 +31,18 @@ const Page = () => {
     },
   });
 
+  const { isLoading: isLoadingDelete, mutate: deleteUser } = useMutation<
+    any,
+    any,
+    string
+  >({
+    mutationFn: (a) => api.post("/users/delete", { username: a }),
+    onSuccess(data, variable) {
+      setPayload(initial);
+      setFake_user((p) => p.filter((c) => c.username !== variable));
+    },
+  });
+
   useQuery<AxiosResponse<T_User[]>>({
     queryKey: ["fake-accounts"],
     queryFn: () => api.post("/users/get-fake-user"),
@@ -41,7 +51,7 @@ const Page = () => {
       setFake_user([...data.data, ...fake_user]);
     },
   });
-  console.log(fake_user);
+
   return (
     <div className="div-stack gap-4">
       <h5>Create fake user</h5>
@@ -177,23 +187,39 @@ const Page = () => {
       <h4>Users</h4>
       {fake_user?.map((value, i) => {
         return (
-          <div
-            key={"a" + i}
-            className="div-stack p-4 bg-white rounded-md gap-2"
-          >
-            <p>
-              Name:{" "}
-              <b>
-                {value.firstName} {value.lastName}
-              </b>
-            </p>
-            <p>
-              Username: <b>{value.username}</b>
-            </p>
-            <p>
-              Email: <b>{value.email}</b>
-            </p>
-          </div>
+          <Center key={"a" + i} className="p-4 bg-white rounded-md">
+            <div className="div-stack gap-2">
+              <p>
+                Name:{" "}
+                <b>
+                  {value.firstName} {value.lastName}
+                </b>
+              </p>
+              <p>
+                Username: <b>{value.username}</b>
+              </p>
+              <p>
+                Email: <b>{value.email}</b>
+              </p>
+            </div>
+            <Spacer />
+            <Button
+              isLoading={isLoadingDelete}
+              onClick={() => deleteUser(value.username)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+                />
+              </svg>
+            </Button>
+          </Center>
         );
       })}
     </div>
