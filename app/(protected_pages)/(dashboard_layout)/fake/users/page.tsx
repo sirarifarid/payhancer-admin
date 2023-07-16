@@ -10,6 +10,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { fakerEN_CA as faker } from "@faker-js/faker";
 import { T_User } from "@/@types/@user";
+import { AxiosResponse } from "axios";
 const Page = () => {
   const initial = useMemo(
     () => ({
@@ -27,12 +28,11 @@ const Page = () => {
       setPayload(initial);
     },
   });
-  useQuery({
+  const { data: fake_user } = useQuery<AxiosResponse<T_User[]>>({
     queryKey: ["fake-accounts"],
     queryFn: () => api.post("/users/get-fake-user"),
     retry: false,
   });
-  const [fake_user] = useAppState<T_User[]>("fake-accounts");
   return (
     <div className="div-stack gap-4">
       <h5>Create fake user</h5>
@@ -166,7 +166,7 @@ const Page = () => {
       </Button>
 
       <h4>Users</h4>
-      {fake_user?.map((value, i) => {
+      {fake_user?.data?.map((value, i) => {
         return (
           <div
             key={"a" + i}
