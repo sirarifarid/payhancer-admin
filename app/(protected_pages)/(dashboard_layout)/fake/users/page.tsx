@@ -10,9 +10,10 @@ import { T_User } from "@/@types/@user";
 import { AxiosResponse } from "axios";
 import { useAtom } from "jotai";
 import { J_fake_user } from "@/store/atoms";
-import { Spacer } from "@/components/layout/Spacer";
+import UserCard from "@/components/(user)/UserCard";
+
 const Page = () => {
-  const initial = useMemo(
+  const initial = useMemo<Partial<T_User>>(
     () => ({
       firstName: "",
       lastName: "",
@@ -23,6 +24,7 @@ const Page = () => {
   );
   const [payload, setPayload] = useState(initial);
   const [fake_user, setFake_user] = useAtom(J_fake_user);
+
   const { mutate, data, error, isLoading } = useMutation<any, any>({
     mutationFn: () => api.post("/users/create", payload),
     onSuccess() {
@@ -31,18 +33,14 @@ const Page = () => {
     },
   });
 
-  const { isLoading: isLoadingDelete, mutate: deleteUser } = useMutation<
-    any,
-    any,
-    string
-  >({
-    mutationFn: (a) => api.post("/users/delete", { username: a }),
-    onSuccess(data, variable) {
-      setPayload(initial);
-      setFake_user((p) => p.filter((c) => c.username !== variable));
+  useQuery<AxiosResponse<T_User[]>>({
+    queryKey: ["fake-accounts"],
+    queryFn: () => api.post("/users/get-fake-user"),
+    retry: false,
+    onSuccess(data) {
+      setFake_user([...data.data, ...fake_user]);
     },
   });
-
   useQuery<AxiosResponse<T_User[]>>({
     queryKey: ["fake-accounts"],
     queryFn: () => api.post("/users/get-fake-user"),
@@ -186,41 +184,7 @@ const Page = () => {
 
       <h4>Users</h4>
       {fake_user?.map((value, i) => {
-        return (
-          <Center key={"a" + i} className="p-4 bg-white rounded-md">
-            <div className="div-stack gap-2">
-              <p>
-                Name:{" "}
-                <b>
-                  {value.firstName} {value.lastName}
-                </b>
-              </p>
-              <p>
-                Username: <b>{value.username}</b>
-              </p>
-              <p>
-                Email: <b>{value.email}</b>
-              </p>
-            </div>
-            <Spacer />
-            <Button
-              isLoading={isLoadingDelete}
-              onClick={() => deleteUser(value.username)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="currentColor"
-                  d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
-                />
-              </svg>
-            </Button>
-          </Center>
-        );
+        return <UserCard key={"a" + i} value={value} />;
       })}
     </div>
   );
