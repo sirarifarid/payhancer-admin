@@ -172,7 +172,7 @@ const UserCard: FC<{ value: Partial<T_User> }> = ({ value }) => {
           <select
             name="rank"
             id=""
-            value={+payload.buying_reputation!.name}
+            value={+(payload.buying_reputation?.name || 0)}
             onChange={(e) => {
               setPayload((p) => {
                 p.buying_reputation!.name = e.target.value as any;
